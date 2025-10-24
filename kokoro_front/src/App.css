@@ -1,7 +1,14 @@
+body {
+  font-family: Arial, sans-serif;
+  margin-top: 0px;
+  background-color: #fff;
+  justify-content: center;
+}
+
 .container {
-  max-width: 600px;
-  margin: 100px auto;
-  text-align: center;
+  border-radius: 6px;
+  max-width: 100%;
+  margin-top: 0vh;
 }
 
 textarea {
