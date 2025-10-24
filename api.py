@@ -8,20 +8,24 @@ import uuid
 
 app = FastAPI()
 
+# Autoriser le frontend Vercel
+origins = [
+    "https://ton-frontend.vercel.app",  # remplace par ton vrai domaine Vercel
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Servir les fichiers générés
 app.mount("/outputs", StaticFiles(directory="outputs"), name="outputs")
 
 class TTSRequest(BaseModel):
     text: str
 
-PYTHON_EXE = r"C:\Users\Nicky\Documents\tetosp\kokoro_env\Scripts\python.exe"
 VOICE = "ff_siwis"
 
 @app.post("/tts")
@@ -29,14 +33,13 @@ async def generate_tts(request: TTSRequest):
     if not request.text:
         raise HTTPException(status_code=400, detail="Le texte ne peut pas être vide.")
 
-    # Créer un fichier unique dans outputs/
     output_dir = "outputs"
     os.makedirs(output_dir, exist_ok=True)
     output_file = f"output_{uuid.uuid4().hex}.wav"
     output_path = os.path.join(output_dir, output_file)
 
     cmd = [
-        PYTHON_EXE,
+        "python",  # Utiliser python de l'environnement Render
         "-m", "kokoro",
         "--voice", VOICE,
         "--text", request.text,
@@ -48,9 +51,6 @@ async def generate_tts(request: TTSRequest):
         subprocess.run(cmd, check=True)
         if not os.path.exists(output_path):
             raise HTTPException(status_code=500, detail="Le fichier audio n'a pas été généré.")
-
-        # FastAPI va servir ce fichier à partir de /outputs/...
         return {"audio_file": f"outputs/{output_file}"}
-
     except subprocess.CalledProcessError as e:
         raise HTTPException(status_code=500, detail=str(e))
