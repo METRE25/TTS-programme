@@ -28,7 +28,7 @@ export default function App() {
 
   return (
     <div className="container">
-      <h1> Kokoro TTS </h1>
+      <h1> TTS </h1>
       <textarea
         row="5"
         placeholder="Entrez le texte à synthétiser ici..."
