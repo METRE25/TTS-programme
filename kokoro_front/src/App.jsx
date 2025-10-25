@@ -11,11 +11,11 @@ export default function App() {
     if (!text.trim()) return alert('Veuillez entrer du texte.');
     setLoading(true);
     try {
-      const response = await axios.post('https://tts-programme.onrender.com/tts', 
+      const response = await axios.post('https://huggingface.co/spaces/METRE-25/tetosp', 
         { text }
       );
       const filename = response.data.audio_file; 
-      setAudioUrl(`https://tts-programme.onrender.com/${filename}`);
+      setAudioUrl(`https://huggingface.co/spaces/METRE-25/tetosp/${filename}`);
     }
     catch (error) {
       console.error('Erreur lors de la génération de la synthèse vocale:', error);
